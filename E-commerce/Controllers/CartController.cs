@@ -1,4 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using E_commerce.Models;
+using E_commerce.Dtos;
+using E_commerce.Application.Interfaces;
+
+
 
 namespace E_commerce.Controllers
 {
@@ -15,12 +20,28 @@ namespace E_commerce.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCart()
         {
-            var cart = await _cs.GetCartAsync();
+            var cart = await _cs.CreateCartAsync();
             return CreatedAtAction(nameof(GetCart), new { id = cart.Id }, cart);
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetCart(Guid id) => Ok(await _cs.GetCartAsync(id));
+        public async Task<IActionResult> GetCart(Guid id) {
+            var cart = await _cs.GetCartAsync(id);
+            if (cart == null)
+                return NotFound();
+            var result = new CartDto
+            {
+                Id = cart.Id,
+                CreatedAt = cart.CreatedAt,
+                Items = cart.Items.Select(i=> new CartItemDto
+                {
+                    ProductId = i.ProductId,
+                    Quantity = i.Quantity
+                }).ToList()
+            };
+
+            return Ok(result);
+        }
 
 
         [HttpPost("{id:guid}/items")]

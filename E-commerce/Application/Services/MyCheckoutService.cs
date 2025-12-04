@@ -56,7 +56,9 @@ namespace E_commerce.Application.Services
                 {
                     {"order_id", order.Id.ToString() },
                     {"cart_id", cart.Id.ToString() }
-                }
+                },
+                // optionally: PaymentMethodTypes = new List<string> { "card" },
+                // optionally: SetupFutureUsage = "off_session" // if saving for recurring
             };
 
 

@@ -25,10 +25,18 @@ StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
 
 
 // services
-builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IMyProductService, MyProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IMyCheckoutService, MyCheckoutService>();
 
+
+//  =============>>>>>  Important <<<<<<<<===============
+// fixing circular reference error 
+
+//builder.Services.AddControllers().AddNewtonsoftJson(options =>
+//{
+//    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+//});
 
 
 // Add services to the container.
@@ -36,6 +44,18 @@ builder.Services.AddScoped<IMyCheckoutService, MyCheckoutService>();
 //builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 
 var app = builder.Build();
 
@@ -56,6 +76,7 @@ using (var scope = app.Services.CreateScope())
     }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAngular");
 
 //app.UseAuthorization();
 

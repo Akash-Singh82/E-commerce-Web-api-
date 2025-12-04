@@ -6,8 +6,8 @@ namespace E_commerce.Controllers
     [Route("api/products")]
     public class ProductsController : Controller
     {
-        private readonly IProductService _ps;
-        public ProductsController(IProductService ps)
+        private readonly IMyProductService _ps;
+        public ProductsController(IMyProductService ps)
         {
             _ps = ps;
         }

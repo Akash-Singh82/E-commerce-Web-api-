@@ -2,7 +2,7 @@
 
 namespace E_commerce.Application.Interfaces
 {
-    public interface IProductService
+    public interface IMyProductService
     {
         Task<IEnumerable<Product>> GetAllAsync();
         Task<Product?> GetByIdAsync(int id);

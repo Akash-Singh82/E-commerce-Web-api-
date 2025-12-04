@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace E_commerce.Application.Services
 {
-    public class ProductService : IProductService
+    public class MyProductService : IMyProductService
     {
         private readonly AppDbContext _db;
-        public ProductService(AppDbContext db)
+        public MyProductService(AppDbContext db)
         {
              _db = db;
         }
