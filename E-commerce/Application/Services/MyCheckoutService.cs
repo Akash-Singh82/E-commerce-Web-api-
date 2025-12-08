@@ -27,6 +27,25 @@ namespace E_commerce.Application.Services
 
             long amount = cart.Items.Sum(i=> i.Product!.Price * i.Quantity);
 
+            if(amount <= 0)
+            {
+                var freeOrder = new Order
+                {
+                    Amount = 0,
+                    Currency = currency,
+                    Status = "Paid",
+                    Items = cart.Items.Select(ci => new OrderItem
+                    {
+                        ProductId = ci.ProductId,
+                        ProductName = ci.Product!.Name,
+                        Quantity = ci.Quantity,
+                        UnitPrice = ci.Product.Price
+                    }).ToList()
+                };
+            _db.Orders.Add(freeOrder);
+            }
+
+
             var order = new Order
             {
                 Amount = amount,

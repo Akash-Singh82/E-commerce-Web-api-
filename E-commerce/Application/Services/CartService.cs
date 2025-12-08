@@ -54,5 +54,21 @@ namespace E_commerce.Application.Services
 
             await _db.SaveChangesAsync();
         }
+
+        public async Task<bool> DeleteCartAsync(Guid id)
+        {
+            var cart = await _db.Carts
+                .Include(c => c.Items)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (cart == null)
+                return false;
+
+            _db.CartItems.RemoveRange(cart.Items);
+            _db.Carts.Remove(cart);
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
     }
 }

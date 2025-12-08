@@ -33,10 +33,11 @@ namespace E_commerce.Controllers
             {
                 Id = cart.Id,
                 CreatedAt = cart.CreatedAt,
-                Items = cart.Items.Select(i=> new CartItemDto
+                Items = cart.Items.Select(i => new CartItemDto
                 {
                     ProductId = i.ProductId,
-                    Quantity = i.Quantity
+                    Quantity = i.Quantity,
+                    Price = i.Product.Price,
                 }).ToList()
             };
 
@@ -48,6 +49,16 @@ namespace E_commerce.Controllers
         public async Task<IActionResult> AddItem(Guid id, AddCartItemDto dto)
         {
             await _cs.AddItemAsync(id, dto.ProductId, dto.Quantity);
+            return NoContent();
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteCart(Guid id)
+        {
+            var succes = await _cs.DeleteCartAsync(id);
+            if (!succes)
+                return NotFound();
+
             return NoContent();
         }
     }
