@@ -23,7 +23,15 @@ namespace E_commerce.Application.Services
         {
             var cart = await _db.Carts.Include(c => c.Items).ThenInclude(i => i.Product)
                 .FirstOrDefaultAsync(c => c.Id == cartId);
+            try
+            {
+
             if (cart == null) throw new InvalidOperationException("Cart not found");
+            }
+            catch
+            {
+                return ("cart is not found", new Order());
+            }
 
             long amount = cart.Items.Sum(i=> i.Product!.Price * i.Quantity);
 
@@ -34,15 +42,27 @@ namespace E_commerce.Application.Services
                     Amount = 0,
                     Currency = currency,
                     Status = "Paid",
-                    Items = cart.Items.Select(ci => new OrderItem
+                };
+                
+                foreach(var ci in cart.Items)
+                {
+                    freeOrder.Items.Add(new OrderItem
                     {
                         ProductId = ci.ProductId,
                         ProductName = ci.Product!.Name,
                         Quantity = ci.Quantity,
                         UnitPrice = ci.Product.Price
-                    }).ToList()
-                };
-            _db.Orders.Add(freeOrder);
+                    });
+                }
+
+                _db.Orders.Add(freeOrder);
+
+                _db.CartItems.RemoveRange(cart.Items);
+                _db.Carts.Remove(cart);
+
+                await _db.SaveChangesAsync();
+
+                return ("FREE_ORDER", freeOrder);
             }
 
 
