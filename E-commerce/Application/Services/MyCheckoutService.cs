@@ -32,11 +32,18 @@ namespace E_commerce.Application.Services
             {
                 return ("cart is not found", new Order());
             }
-
+            if(cart.Items==null || !cart.Items.Any())
+            {
+                return ("NO_ITEMS", new Order());
+            }
             long amount = cart.Items.Sum(i=> i.Product!.Price * i.Quantity);
 
             if(amount <= 0)
             {
+                if (!cart.Items.Any())
+                {
+                    return ("NO_ITEMS", new Order());
+                }
                 var freeOrder = new Order
                 {
                     Amount = 0,

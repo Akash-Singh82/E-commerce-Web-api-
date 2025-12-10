@@ -39,6 +39,9 @@ namespace E_commerce.Data
                 });
                 db.SaveChanges();
             }
+
+            //db.Products.AddAsync(new Product { Name = "Coffee Mug", Description = "Chai pee lo", Price = 0, Currency = "usd" });
+            //db.SaveChangesAsync();
         }
     }
 }
